@@ -14,7 +14,7 @@ def transform(all_data):
     logger.info(f"Transforming {len(all_data)} array elements.")
     # divide by two
     # if input is zero return zero (don't divide by zero)
-    all_data = [0 if 0 else x / 2 for x in all_data]
+    return [0 if 0 else x / 2 for x in all_data]
 
 @task
 def load(all_data):
@@ -26,9 +26,9 @@ def load(all_data):
         f.close()
 
 with Flow("etl-flow") as flow:
-    data = extract()
-    transform(data)
-    load(data)
+    data_ext = extract()
+    data_trn = transform(data_ext)
+    load(data_trn)
 
 # Register the flow under the "tutorial" project
 flow.register(project_name="tutorial")
