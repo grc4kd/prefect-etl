@@ -13,18 +13,24 @@ def transform(all_data):
     logger = prefect.context.get("logger")
     logger.info(f"Transforming {len(all_data)} array elements.")
 
+    # a sub-routine to do some quick math
     def subt(elem):
-        x = 0
+        x = None
+
         try:
+            # convert input to integer as needed
             x = int(elem)
         except Exception:
+            # if no conversion is possible, default to 0
             x = 0
+
+        # all inputs besides zero work
         if x != 0:
             return 2 / x
+        # 2 / x would divide by zero, return -1 instead
         if x == 0:
             return int.from_bytes(b'\xff\xff', byteorder='big', signed=True)
-    # divide by two
-    # if input is zero return zero (don't divide by zero)
+    
     return [subt(x) for x in all_data]
 
 @task
