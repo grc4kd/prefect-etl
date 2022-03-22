@@ -13,7 +13,7 @@ def extract():
 
 
 @task
-def join_data_lists(data_lists: list[list]):
+def join_data_lists(data_lists):
     # unpack lists and make one long list
     logger = prefect.context.get("logger")
     logger.info("Joining...")
