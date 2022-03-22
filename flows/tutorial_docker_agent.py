@@ -13,7 +13,7 @@ def extract():
 
 
 @task
-def join(data_lists: list[list]):
+def join_data_lists(data_lists: list[list]):
     # unpack lists and make one long list
     logger = prefect.context.get("logger")
     logger.info("Joining...")
@@ -69,7 +69,7 @@ with Flow("test_docker_agent") as flow:
     # let's run a bunch of functions x10
     data_ext = [extract() for i in range(10)]
     # join extract outputs into one big list
-    data_join = join(data_ext)
+    data_join = join_data_lists(data_ext)
     # let's make transform(de) depend on the product of extract() list comprehension
     data_trn = [transform(data_join) for i in range(3)]
     for dt in data_trn:
