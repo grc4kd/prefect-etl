@@ -56,7 +56,7 @@ with Flow("test_docker_agent") as flow:
     # let's run a bunch of functions x10
     data_ext = [extract() for i in range(10)]
     # let's make transform(de) depend on the product of extract() list comprehension
-    data_trn = transform([de for de in data_ext])
+    data_trn = [transform([data_ext]) for i in range(3)]
     for dt in data_trn:
         load(dt)
 
