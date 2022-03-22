@@ -10,5 +10,7 @@ with Flow("test_docker_agent") as flow:
         image="prefecthq/prefect:latest"
     )
 
-# run a different python file as a flow from GitHub storage
-flow.storage = GitHub(repo="grck4d/prefect-etl", path="/flows/tutorial_03.py")
+# storage can point to the same module
+flow.storage = GitHub(repo="grc4kd/prefect-etl",
+                      path="/flows/tutorial_docker_agent.py",
+                      access_token_secret="github_secret_grc4kd")
