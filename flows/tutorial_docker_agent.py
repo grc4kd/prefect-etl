@@ -47,20 +47,17 @@ def load(all_data):
         f.write(str(all_data) + "\n")
         f.close()
 
-with Flow("etl-flow") as flow:
-    data_ext = extract()
-    data_trn = transform(data_ext)
-    load(data_trn)
-
 # Configure extra environment variables for this flow,
 # and set a custom image
 with Flow("test_docker_agent") as flow:
     flow.run_config = DockerRun(
         image="prefecthq/prefect:latest"
     )
-    data_ext = extract()
-    data_trn = transform(data_ext)
-    load(data_trn)
+    # let's run a bunch of functions x10
+    data_ext = [extract() for i in range(10)]
+    data_trn = [transform(de) for de in data_ext]
+    for dt in data_trn:
+        load(dt)
 
 # storage can point to the same module
 flow.storage = GitHub(repo="grc4kd/prefect-etl",
