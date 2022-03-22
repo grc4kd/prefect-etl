@@ -17,7 +17,9 @@ def join_data_lists(data_lists: list[list]):
     # unpack lists and make one long list
     logger = prefect.context.get("logger")
     logger.info("Joining...")
-    all_data = [data for data in data_lists]
+    all_data = []
+    for data in data_lists:
+        all_data.extend(data)
     return all_data
 
 
