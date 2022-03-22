@@ -3,12 +3,23 @@ from prefect import Flow, task
 from prefect.run_configs import DockerRun
 from prefect.storage import GitHub
 
+
 @task
 def extract():
     logger = prefect.context.get("logger")
     logger.info("Extracting...")
-    all_data = [123, "234", "ball", 0, 345, 456, 567, 234, 456, 123]
+    data = [123, "234", "ball", 0, 345, 456, 567, 234, 456, 123]
+    return data
+
+
+@task
+def join(data_lists: list[list]):
+    # unpack lists and make one long list
+    logger = prefect.context.get("logger")
+    logger.info("Joining...")
+    all_data = [data for data in data_lists]
     return all_data
+
 
 @task
 def transform(all_data):
@@ -32,8 +43,9 @@ def transform(all_data):
         # 2 / x would divide by zero, return -1 instead
         if x == 0:
             return int.from_bytes(b'\xff\xff', byteorder='big', signed=True)
-    
+
     return [subt(x) for x in all_data]
+
 
 @task
 def load(all_data):
@@ -47,6 +59,7 @@ def load(all_data):
         f.write(str(all_data) + "\n")
         f.close()
 
+
 # Configure extra environment variables for this flow,
 # and set a custom image
 with Flow("test_docker_agent") as flow:
@@ -55,10 +68,10 @@ with Flow("test_docker_agent") as flow:
     )
     # let's run a bunch of functions x10
     data_ext = [extract() for i in range(10)]
-    # then join the output together into one big list
-    data_join = [elem for elem in data_ext]
+    # join extract outputs into one big list
+    data_join = join(data_ext)
     # let's make transform(de) depend on the product of extract() list comprehension
-    data_trn = [transform(data_ext) for i in range(3)]
+    data_trn = [transform(data_join) for i in range(3)]
     for dt in data_trn:
         load(dt)
 
