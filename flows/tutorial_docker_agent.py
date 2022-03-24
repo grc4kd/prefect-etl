@@ -9,7 +9,8 @@ from prefect.executors import DaskExecutor
 def extract():
     logger = prefect.context.get("logger")
     logger.info("Extracting...")
-    data = [123, "234", "ball", 0, 345, 456, 567, 234, 456, 123]
+    data = [123, "234", "ball", 0, 345, 456, 567, 234, 456, 123,
+            "e2e2", 123, -23, "fun guy", 3302]
     return data
 
 
@@ -31,8 +32,8 @@ def transform(data):
 
         # all inputs besides zero work
         if x != 0:
-            return 2 / x
-        # 2 / x would divide by zero, return -1 instead
+            return 4 / x
+        # y / 0 would divide by zero, return -1 instead
         if x == 0:
             return int.from_bytes(b'\xff\xff', byteorder='big', signed=True)
 
@@ -58,8 +59,8 @@ with Flow("test_docker_agent") as flow:
     flow.run_config = DockerRun(
         image="prefecthq/prefect:latest"
     )
-    # let's run a bunch of functions x10 range mapping
-    data_list = [extract() for i in range(10)]
+    # let's run a bunch of functions range mapping
+    data_list = [extract() for i in range(100)]
 
     # join extract outputs into one big list by using flat-mapping
     data_trn = transform(data=flatten(data_list))
