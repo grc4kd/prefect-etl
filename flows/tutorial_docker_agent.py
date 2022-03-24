@@ -42,6 +42,7 @@ def transform(data):
 
 @task
 def load(data):
+    import os
     logger = prefect.context.get("logger")
     logger.info(f"Loading data, {len(data)} records.")
     
@@ -49,6 +50,7 @@ def load(data):
     with open("new_data.txt", "w") as f:
         f.write(str(data) + "\n")
         f.close()
+        logger.info(f"Finished writing to file {os.fspath(f)}")
 
 
 # Configure extra environment variables for this flow,
