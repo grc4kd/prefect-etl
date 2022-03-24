@@ -2,6 +2,7 @@ import prefect
 from prefect import Flow, task
 from prefect.run_configs import DockerRun
 from prefect.storage import GitHub
+from prefect.executors import DaskExecutor
 
 
 @task
@@ -81,3 +82,6 @@ with Flow("test_docker_agent") as flow:
 flow.storage = GitHub(repo="grc4kd/prefect-etl",
                       path="/flows/tutorial_docker_agent.py",
                       access_token_secret="github_secret_grc4kd")
+
+# By default this will use a temporary local Dask cluster
+flow.executor = DaskExecutor()
