@@ -43,10 +43,8 @@ def transform(data):
 @task
 def load(data):
     logger = prefect.context.get("logger")
-    logger.info("Loading data...")
-    # normally we would want to keep the data
-    # OUT of the prefect cloud logs
-    logger.info(str(data))
+    logger.info(f"Loading data, {len(data)} records.")
+    
     # write / load data to new text file
     with open("new_data.txt", "w") as f:
         f.write(str(data) + "\n")
