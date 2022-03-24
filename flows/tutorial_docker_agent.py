@@ -62,7 +62,7 @@ with Flow("test_docker_agent") as flow:
     data_list = [extract() for i in range(10)]
 
     # join extract outputs into one big list by using flat-mapping
-    data_trn = transform.map(data=flatten(data_list))
+    data_trn = transform(data=flatten(data_list))
 
     # load the data using a mapping function
     load.map(data=data_trn)
