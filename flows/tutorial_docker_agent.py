@@ -43,14 +43,18 @@ def transform(data):
 @task
 def load(data):
     import os
+    from pathlib import Path
+
     logger = prefect.context.get("logger")
     logger.info(f"Loading data, {len(data)} records.")
-    
-    # write / load data to new text file
-    with open("new_data.txt", "w") as f:
+
+    # write / load data to new text file to home dir
+    home = str(Path.home())
+    file = home + "/new_data.txt"
+    with open(file, "w") as f:
         f.write(str(data) + "\n")
         f.close()
-        logger.info(f"Finished writing to file {os.fspath(f)}")
+        logger.info(f"Finished writing to file {os.fspath(file)}")
 
 
 # Configure extra environment variables for this flow,
@@ -66,7 +70,7 @@ with Flow("test_docker_agent") as flow:
     data_trn = [transform(data=data_list) for i in range(100)]
 
     # load the data using a mapping function
-    load(data=data_trn)
+    load(data=flatten(data_trn))
 
 # storage can point to the same module
 flow.storage = GitHub(repo="grc4kd/prefect-etl",
