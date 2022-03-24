@@ -50,12 +50,17 @@ def load(data):
 
     # write / load data to new text file to home dir
     home = str(Path.home())
-    file = home + "/new_data.txt"
-    with open(file, "w") as f:
-        f.write(str(data) + "\n")
-        f.close()
-        logger.info(f"Finished writing to file {os.fspath(file)}")
+    folder = os.path.join(home, "/prefect_data/")
+    file = os.path.join(folder, "new_data.txt")
+    
+    if os.path.exists(folder):
+        with open(file, "w") as f:
+            f.write(str(data) + "\n")
+            f.close()
+            logger.info(f"Finished writing to file {os.fspath(file)}")
 
+    if os.path.exists(folder):
+        logger.error(f"Could not find an existing folder at {folder}")
 
 # Configure extra environment variables for this flow,
 # and set a custom image
