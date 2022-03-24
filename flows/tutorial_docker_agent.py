@@ -58,10 +58,10 @@ with Flow("test_docker_agent") as flow:
         image="prefecthq/prefect:latest"
     )
     # let's run a bunch of functions range mapping
-    data_list = [extract() for i in range(100)]
+    data_list = extract()
 
     # join extract outputs into one big list by using flat-mapping
-    data_trn = transform(data=flatten(data_list))
+    data_trn = [transform(data=data_list) for i in range(100)]
 
     # load the data using a mapping function
     load(data=data_trn)
