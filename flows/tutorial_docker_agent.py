@@ -53,16 +53,23 @@ def load(data):
     folder = os.path.join(home, "/prefect_data/")
     file = os.path.join(folder, "new_data.txt")
     
+    if not os.path.exists(folder):
+        # try to make the folder if it does not exist
+        logger.warning(f"Could not find folder, creating {folder}")
+        os.mkdir(folder)
+        # if we still can't find a folder make sure to raise an error
+        if not os.path.exists(folder):
+            errMsg = f"Could not find an existing folder at {folder}"
+            logger.error(errMsg)
+            raise FileNotFoundError(errMsg)
+
     if os.path.exists(folder):
         with open(file, "w") as f:
             f.write(str(data) + "\n")
             f.close()
             logger.info(f"Finished writing to file {os.fspath(file)}")
 
-    if not os.path.exists(folder):
-        errMsg = f"Could not find an existing folder at {folder}"
-        logger.error(errMsg)
-        raise FileNotFoundError(errMsg)
+    
 
 # Configure extra environment variables for this flow,
 # and set a custom image
