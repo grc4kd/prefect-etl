@@ -65,7 +65,7 @@ with Flow("test_docker_agent") as flow:
     data_trn = transform(data=flatten(data_list))
 
     # load the data using a mapping function
-    load.map(data=data_trn)
+    load(data=data_trn)
 
 # storage can point to the same module
 flow.storage = GitHub(repo="grc4kd/prefect-etl",
