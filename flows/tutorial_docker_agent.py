@@ -73,6 +73,4 @@ flow.storage = GitHub(repo="grc4kd/prefect-etl",
                       access_token_secret="github_secret_grc4kd")
 
 # By default this will use a temporary local Dask cluster
-flow.executor = DaskExecutor(
-    cluster_kwargs={"n_workers": 2, "threads_per_worker": 2}
-)
+flow.executor = DaskExecutor()
