@@ -59,7 +59,7 @@ def load(data):
             f.close()
             logger.info(f"Finished writing to file {os.fspath(file)}")
 
-    if os.path.exists(folder):
+    if not os.path.exists(folder):
         logger.error(f"Could not find an existing folder at {folder}")
 
 # Configure extra environment variables for this flow,
