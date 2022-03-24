@@ -60,7 +60,9 @@ def load(data):
             logger.info(f"Finished writing to file {os.fspath(file)}")
 
     if not os.path.exists(folder):
-        logger.error(f"Could not find an existing folder at {folder}")
+        errMsg = f"Could not find an existing folder at {folder}"
+        logger.error(errMsg)
+        raise FileNotFoundError(errMsg)
 
 # Configure extra environment variables for this flow,
 # and set a custom image
