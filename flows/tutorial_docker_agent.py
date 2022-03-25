@@ -78,6 +78,7 @@ def load(data):
 with Flow("test_docker_agent") as flow:
     # flow parameter -- number of times to run the transform function
     transform_count = Parameter("flowCount", default=10)
+
     flow.run_config = DockerRun(
         image="prefecthq/prefect:latest"
     )
@@ -87,7 +88,8 @@ with Flow("test_docker_agent") as flow:
     # add a parameter to support iterations to transform function
     #data_trn = transform(data=data_list, k=transform_count)
     # or...join extract outputs into one big list of lists by using flat-mapping
-    data_trn = [transform(data=data_list, k=transform_count) for i in range(transform_count)]
+    # Parameters are not evaluated until flow.run(), this code cannot use Parameter value
+    data_trn = [transform(data=data_list, k=1) for i in range(10)]
 
     # load the data using a mapping function to take lists of lists
     # and produce a single list with no nested lists as children
