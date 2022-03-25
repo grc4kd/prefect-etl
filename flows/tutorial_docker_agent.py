@@ -84,10 +84,13 @@ with Flow("test_docker_agent") as flow:
     # let's run a bunch of functions range mapping
     data_list = extract()
 
-    # join extract outputs into one big list by using flat-mapping
-    data_trn = transform(data=data_list, k=transform_count)
+    # add a parameter to support iterations to transform function
+    #data_trn = transform(data=data_list, k=transform_count)
+    # or...join extract outputs into one big list of lists by using flat-mapping
+    data_trn = [transform(data=data_list, k=transform_count) for i in range(transform_count)]
 
-    # load the data using a mapping function
+    # load the data using a mapping function to take lists of lists
+    # and produce a single list with no nested lists as children
     load(data=flatten(data_trn))
 
 # storage can point to the same module
