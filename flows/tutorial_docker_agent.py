@@ -77,7 +77,7 @@ def load(data):
 # and set a custom image
 with Flow("test_docker_agent") as flow:
     # flow parameter -- number of times to run the transform function
-    transform_count = Parameter("flowCount", default="10")
+    transform_count = Parameter("flowCount", default=10)
     flow.run_config = DockerRun(
         image="prefecthq/prefect:latest"
     )
