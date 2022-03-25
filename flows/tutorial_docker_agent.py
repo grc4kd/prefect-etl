@@ -3,7 +3,7 @@ from prefect import Flow, task, flatten
 from prefect.run_configs import DockerRun
 from prefect.storage import GitHub
 from prefect.executors import DaskExecutor
-
+from prefect import Parameter
 
 @task
 def extract():
@@ -11,15 +11,16 @@ def extract():
     logger.info("Extracting...")
     data = [123, "234", "ball", 0, 345, 456, 567, 234, 456, 123,
             "e2e2", 123, -23, "fun guy", 3302]
+    data = data * 10 # repeat list 10 times / 150 elements
     return data
 
-
 @task
-def transform(data):
+def transform(data, k):
+    # transform the same data k times, just for kicks
     logger = prefect.context.get("logger")
     logger.info(f"Transforming {len(data)} array elements.")
 
-    # a sub-routine to do some quick math
+    # a sub-routine to do some quick math with each element
     def subt(elem):
         x = None
 
@@ -37,7 +38,8 @@ def transform(data):
         if x == 0:
             return int.from_bytes(b'\x42\x42', byteorder='big', signed=True)
 
-    return [subt(x) for x in data]
+    # put it all together, run subt(x) over x elements in data * k times
+    return [subt(x) for x in data] * k
 
 
 @task
@@ -74,6 +76,8 @@ def load(data):
 # Configure extra environment variables for this flow,
 # and set a custom image
 with Flow("test_docker_agent") as flow:
+    # flow parameter -- number of times to run the transform function
+    transform_count = Parameter("flowCount", default="10")
     flow.run_config = DockerRun(
         image="prefecthq/prefect:latest"
     )
@@ -81,7 +85,7 @@ with Flow("test_docker_agent") as flow:
     data_list = extract()
 
     # join extract outputs into one big list by using flat-mapping
-    data_trn = [transform(data=data_list) for i in range(100)]
+    data_trn = transform(data=data_list, k=transform_count)
 
     # load the data using a mapping function
     load(data=flatten(data_trn))
