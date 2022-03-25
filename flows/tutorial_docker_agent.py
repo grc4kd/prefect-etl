@@ -33,9 +33,9 @@ def transform(data):
         # all inputs besides zero work
         if x != 0:
             return 4 / x
-        # y / 0 would divide by zero, return -1 instead
+        # y / 0 would divide by zero, return magic bits instead
         if x == 0:
-            return int.from_bytes(b'\xff\xff', byteorder='big', signed=True)
+            return int.from_bytes(b'\x42\x42', byteorder='big', signed=True)
 
     return [subt(x) for x in data]
 
