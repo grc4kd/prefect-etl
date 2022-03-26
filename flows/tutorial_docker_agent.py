@@ -86,10 +86,7 @@ with Flow("test_docker_agent") as flow:
     data_list = extract()
 
     # add a parameter to support iterations to transform function
-    #data_trn = transform(data=data_list, k=transform_count)
-    # or...join extract outputs into one big list of lists by using flat-mapping
-    # Parameters are not evaluated until flow.run(), this code cannot use Parameter value
-    data_trn = [transform(data=data_list) for i in range(10)]
+    data_trn = transform(data=data_list, k=transform_count)
 
     # load the data using a mapping function to take lists of lists
     # and produce a single list with no nested lists as children
