@@ -15,7 +15,7 @@ def extract():
     return data
 
 @task
-def transform(data, k):
+def transform(data, k: int = 1):
     # transform the same data k times, just for kicks
     logger = prefect.context.get("logger")
     logger.info(f"Transforming {len(data)} array elements.")
@@ -89,7 +89,7 @@ with Flow("test_docker_agent") as flow:
     #data_trn = transform(data=data_list, k=transform_count)
     # or...join extract outputs into one big list of lists by using flat-mapping
     # Parameters are not evaluated until flow.run(), this code cannot use Parameter value
-    data_trn = [transform(data=data_list, k=1) for i in range(10)]
+    data_trn = [transform(data=data_list) for i in range(10)]
 
     # load the data using a mapping function to take lists of lists
     # and produce a single list with no nested lists as children
