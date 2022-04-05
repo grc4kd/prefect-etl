@@ -1,5 +1,6 @@
 import prefect
 from prefect import task, Flow
+from prefect.storage import GitHub
 
 @task
 def extract():
@@ -50,6 +51,7 @@ with Flow("etl-flow") as flow:
     data_trn = transform(data_ext)
     load(data_trn)
 
-# Register the flow under the "tutorial" project
-flow.register(project_name="tutorial")
-#flow.run()
+# storage can point to the same module
+flow.storage = GitHub(repo="grc4kd/prefect-etl",
+                      path="/flows/tutorial_03.py",
+                      access_token_secret="github_secret_grc4kd")
